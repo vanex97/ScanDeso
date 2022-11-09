@@ -212,4 +212,8 @@ return [
         // 'ExampleClass' => App\Example\ExampleClass::class,
     ])->toArray(),
 
+    'deso' => [
+        'api_base_url' => 'https://node.deso.org/api/'
+    ]
+
 ];
