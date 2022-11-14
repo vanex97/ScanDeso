@@ -7,6 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="icon" type="image/x-icon" href="/favicon.png">
     <link rel="stylesheet" href="{{ mix('/css/app.css') }}">
+{{--    <link href="https://bootswatch.com/5/cyborg/bootstrap.min.css" rel="stylesheet">--}}
 
     <title>ScanDeso - @yield('title')</title>
 </head>
@@ -17,7 +18,7 @@
             @yield('content')
         </div>
     </main>
-    <x-footer></x-footer>
+{{--    <x-footer></x-footer>--}}
     <script src="{{ mix('/js/app.js') }}"></script>
     @stack('js')
 </body>

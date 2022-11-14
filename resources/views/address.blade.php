@@ -35,10 +35,10 @@
                         DESO ≈ ${{ \App\Helpers\CurrencyHelper::nanoToDollars($user['DESOBalanceNanos'], $desoDesoPrice) }}
                     </span>
                 </li>
-{{--                <li class="list-group-item d-flex justify-content-between">--}}
-{{--                    <span>Balance</span>--}}
-{{--                    <span>10$</span>--}}
-{{--                </li>--}}
+                <li class="list-group-item d-flex justify-content-between">
+                    <span>Total transactions:</span>
+                    <span>{{ number_format($transactionQuantity) }}</span>
+                </li>
             </ul>
         </div>
 {{--        <div class="card mt-5 col">--}}
@@ -50,7 +50,7 @@
 {{--        </div>--}}
     </div>
 
-    <table class="table mt-5">
+    <table class="table table-bordered mt-5">
         <thead>
         <tr>
             <th scope="col">Transaction ID</th>
@@ -69,51 +69,86 @@
             @endif
 
             <tr>
-                <td><span class="text-truncate hash-tag">{{ $transaction['TransactionIDBase58Check'] }}</span></td>
-                <td>{{ \App\Helpers\StringHelper::formatTransactionType($transaction['TransactionType']) }}</td>
-
-                @if(count($transaction['TransactionMetadata']['TxnOutputs']) === 1)
-                    <td>
-                        <a href="{{ route('address', ['address' => $transaction['Outputs'][0]['PublicKeyBase58Check']]) }}"
-                           class="text-truncate hash-tag"
-                           data-bs-toggle="tooltip"
-                           data-bs-placement="top"
-                           data-bs-custom-class="address-tooltip"
-                           data-bs-title="{{ $transaction['Outputs'][0]['PublicKeyBase58Check'] }}">
-                            {{ $transaction['Outputs'][0]['PublicKeyBase58Check'] }}
-                        </a>
-                    </td>
-                    <td><span class="badge rounded-pill text-bg-primary operation-badge">Social</span></td>
-                    <td> - </td>
-                @else
-                    <td>
-                        <a href="{{ route('address', $transaction['Outputs'][1]['PublicKeyBase58Check']) }}"
-                           class="text-truncate hash-tag"
-                           data-bs-toggle="tooltip"
-                           data-bs-placement="top"
-                           data-bs-custom-class="address-tooltip"
-                           data-bs-title="{{ $transaction['Outputs'][1]['PublicKeyBase58Check'] }}">
-                            {{ $transaction['Outputs'][1]['PublicKeyBase58Check'] }}
-                        </a>
-                    </td>
-                    <td>
-                        @if ($transaction['Outputs'][0]['PublicKeyBase58Check'] == $user['PublicKeyBase58Check'])
-                            <span class="badge rounded-pill text-bg-success operation-badge">In</span>
-                        @elseif ($transaction['Outputs'][1]['PublicKeyBase58Check'] == $user['PublicKeyBase58Check'])
-                            <span class="badge rounded-pill text-bg-warning operation-badge">Out</span>
+                <td>
+                    <a class="text-truncate hash-tag" href="{{ route('transaction', ['transactionId' => $transaction['TransactionIDBase58Check']]) }}">
+                        {{ $transaction['TransactionIDBase58Check'] }}
+                    </a>
+                </td>
+                <td>
+                    {{ \App\Helpers\StringHelper::formatTransactionType($transaction['TransactionType']) }}
+                    @if (isset($transaction['TransactionMetadata']['FollowTxindexMetadata']['IsUnfollow'])
+                         && $transaction['TransactionMetadata']['FollowTxindexMetadata']['IsUnfollow'])
+                        (Unfollow)
+                    @elseif(isset($transaction['TransactionMetadata']['LikeTxindexMetadata']['IsUnlike'])
+                            && $transaction['TransactionMetadata']['LikeTxindexMetadata']['IsUnlike'])
+                        (Dislike)
+                    @endif
+                </td>
+                <td>
+                    <a href="{{ route('address', $transaction['TransactionMetadata']['AffectedPublicKeys'][0]['PublicKeyBase58Check']) }}"
+                       class="text-truncate hash-tag"
+                       data-bs-toggle="tooltip"
+                       data-bs-placement="top"
+                       data-bs-custom-class="address-tooltip"
+                       data-bs-title="{{ $transaction['TransactionMetadata']['AffectedPublicKeys'][0]['PublicKeyBase58Check'] }}">
+                        {{ $transaction['TransactionMetadata']['AffectedPublicKeys'][0]['PublicKeyBase58Check'] }}
+                    </a>
+                </td>
+                <td class="text-center">
+                    @if ($transaction['TransactionMetadata']['AffectedPublicKeys'][0]['PublicKeyBase58Check'] == $user['PublicKeyBase58Check'])
+                        <span class="badge rounded-pill text-bg-warning operation-badge">Out</span>
+                    @else
+                        <span class="badge rounded-pill text-bg-success operation-badge">In</span>
+                    @endif
+                </td>
+                <td>
+                    @if($transaction['TransactionType'] != 'UPDATE_PROFILE')
+                        @if(count($transaction['TransactionMetadata']['AffectedPublicKeys']) == 2)
+                            <a href="{{ route('address', $transaction['TransactionMetadata']['AffectedPublicKeys'][1]['PublicKeyBase58Check']) }}"
+                               class="text-truncate hash-tag"
+                               data-bs-toggle="tooltip"
+                               data-bs-placement="top"
+                               data-bs-custom-class="address-tooltip"
+                               data-bs-title="{{ $transaction['TransactionMetadata']['AffectedPublicKeys'][1]['PublicKeyBase58Check'] }}">
+                                {{ $transaction['TransactionMetadata']['AffectedPublicKeys'][1]['PublicKeyBase58Check'] }}
+                            </a>
+                        @elseif(count($transaction['TransactionMetadata']['AffectedPublicKeys']) > 2)
+                            <div class="accordion accordion-flush" id="accordion-{{ $loop->iteration }}">
+                                <div class="accordion-item">
+                                    <button class="accordion-button p-0 collapsed"
+                                            type="button"
+                                            data-bs-toggle="collapse"
+                                            data-bs-target="#flush-collapse-{{ $loop->iteration }}"
+                                            aria-controls="flush-collapse-{{ $loop->iteration }}">
+                                        {{ count($transaction['TransactionMetadata']['AffectedPublicKeys']) - 1 }} addresses
+                                    </button>
+                                    <div id="flush-collapse-{{ $loop->iteration }}"
+                                         class="collapse clickable"
+                                         aria-labelledby="flush-heading-{{ $loop->iteration }}"
+                                         data-bs-parent="#accordion-{{ $loop->iteration }}">
+                                            @foreach($transaction['TransactionMetadata']['AffectedPublicKeys'] as $affectedTransaction)
+                                                @if($loop->iteration == 1)
+                                                    @continue
+                                                @endif
+                                                <div class="row mt-1">
+                                                    <a href="{{ route('address', $affectedTransaction['PublicKeyBase58Check']) }}"
+                                                       class="text-truncate hash-tag"
+                                                       data-bs-toggle="tooltip"
+                                                       data-bs-placement="top"
+                                                       data-bs-custom-class="address-tooltip"
+                                                       data-bs-title="{{ $affectedTransaction['PublicKeyBase58Check'] }}">
+                                                        {{ $affectedTransaction['PublicKeyBase58Check'] }}
+                                                    </a>
+                                                </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            </div>
                         @endif
-                    </td>
-                    <td>
-                        <a href="{{ route('address', $transaction['Outputs'][0]['PublicKeyBase58Check']) }}"
-                           class="text-truncate hash-tag"
-                           data-bs-toggle="tooltip"
-                           data-bs-placement="top"
-                           data-bs-custom-class="address-tooltip"
-                           data-bs-title="{{ $transaction['Outputs'][0]['PublicKeyBase58Check'] }}">
-                            {{ $transaction['Outputs'][0]['PublicKeyBase58Check'] }}
-                        </a>
-                    </td>
-                @endif
+                    @else
+                        -
+                    @endif
+                </td>
                 <td data-bs-toggle="tooltip"
                     data-bs-placement="top"
                     data-bs-title="{{ \App\Helpers\CurrencyHelper::nanoToDeso($transaction['Outputs'][0]['AmountNanos'], null) }} DESO">
@@ -126,4 +161,5 @@
         @endforeach
         </tbody>
     </table>
+    <x-transactions-pagination :$address :$page :$transactionQuantity></x-transactions-pagination>
 @endsection

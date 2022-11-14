@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AddressController;
+use App\Http\Controllers\BlockController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\TransactionController;
 use Illuminate\Support\Facades\Route;
@@ -23,6 +24,7 @@ Route::get('/address/{address}', [AddressController::class, 'index'])->name('add
 Route::post('/address', [AddressController::class, 'search'])->name('address.search');
 
 Route::get('/transaction/{transactionId}', [TransactionController::class, 'index'])->name('transaction');
+Route::get('/block/{block}', [BlockController::class, 'index'])->name('block');
 
 Route::get('/test', function () {
 

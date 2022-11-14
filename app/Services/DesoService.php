@@ -9,6 +9,8 @@ class DesoService
 {
     public const BASE_58_STARTS_WITH = 'BC';
 
+    public const TRANSACTIONS_LIMIT = 25;
+
     /** @var Client */
     public $client;
 
@@ -62,13 +64,63 @@ class DesoService
      * FreeNanos комис
      */
 
-    public function transactionsInfo($publicKeyBase58Check, $limit)
+    public function transactionInfoByPage($publicKeyBase58Check, $limit, $page = 1)
+    {
+        $offset = 0;
+
+        if ($page != 1) {
+            $offset = ($page - 1) * DesoService::TRANSACTIONS_LIMIT;
+
+            $offset = $this->transactionQuantity($publicKeyBase58Check) - $offset;
+        }
+
+        return $this->transactionsInfo($publicKeyBase58Check, $limit, $offset);
+    }
+
+    public function transactionsInfo($publicKeyBase58Check, $limit, $offset = null)
     {
         return $this->request('POST','v1/transaction-info', [
             'PublicKeyBase58Check' => $publicKeyBase58Check,
-            'Limit' => $limit
+            'Limit' => $limit,
+            'LastPublicKeyTransactionIndex' => $offset
         ]);
     }
+
+    public function transactionQuantity($publicKeyBase58Check)
+    {
+        $response = $this->request('POST','v1/transaction-info', [
+            'PublicKeyBase58Check' => $publicKeyBase58Check,
+            'IDsOnly' => true,
+            'Limit' => 1,
+        ]);
+
+        if (isset($response['LastPublicKeyTransactionIndex'])) {
+            return $response['LastPublicKeyTransactionIndex'];
+        }
+
+        return null;
+    }
+
+//    /**
+//     * метод получения цепочки транзакций
+//     */
+//    public function transactionsChain($transactionId, $limit)
+//    {
+//        $transactions = [];
+//
+//        for ($i = 0; $i < $limit; $i++) {
+//            $transaction = $this->transactionInfo($transactionId);
+//
+//            if (!isset($transaction['Transactions'][0])) {
+//                return null;
+//            }
+//
+//            $transactions[] = $transaction['Transactions'][0];
+//            $transactionId = $transaction['Transactions'][0]['Inputs'][0]['TransactionIDBase58Check'];
+//        }
+//
+//        return $transactions;
+//    }
 
     public function transactionInfo($transactionID)
     {
@@ -77,11 +129,19 @@ class DesoService
         ]);
     }
 
-    // TODO: можно взять timestamp
-    public function blockInfo($hashHex)
+    public function blockInfo($hashHex, $fullBlock = false)
     {
         return $this->request('POST','v1/block', [
-            'HashHex' => $hashHex
+            'HashHex' => $hashHex,
+            'FullBlock' => $fullBlock
+        ]);
+    }
+
+    public function blockInfoByHeight($height, $fullBlock = false)
+    {
+        return $this->request('POST','v1/block', [
+            'Height' => (integer) $height,
+            'FullBlock' => $fullBlock
         ]);
     }
 
