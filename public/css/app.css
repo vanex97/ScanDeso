@@ -1,0 +1,203 @@
+* {
+  transition-duration: 200ms;
+}
+
+.container {
+  margin: 0 auto;
+  max-width: 60%;
+}
+
+.main-search-home {
+  margin-top: 35vh;
+}
+
+.main-search {
+  text-align: center;
+}
+.main-search__form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.main-search__input {
+  font-size: 18px;
+  border-top-left-radius: 50px;
+  border-bottom-left-radius: 50px;
+  padding-left: 30px;
+  border: 1px solid black;
+  width: 95%;
+  height: 50px;
+  margin-right: -5px;
+}
+.main-search__input:focus {
+  outline: 0;
+}
+.main-search__button {
+  height: 50px;
+  width: 5%;
+  background: white;
+  border: 1px solid black;
+  border-left: none;
+  cursor: pointer;
+  padding-right: 30px;
+  border-top-right-radius: 50px;
+  border-bottom-right-radius: 50px;
+}
+.main-search__button svg {
+  max-width: 30px;
+}
+
+.hash-tag {
+  max-width: 220px;
+  display: inline-block;
+  vertical-align: bottom;
+}
+
+.user-info__logo {
+  border-radius: 50%;
+  height: 72px;
+  width: 72px;
+}
+.user-info__username {
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.address-tooltip {
+  white-space: nowrap;
+  --bs-tooltip-max-width: 600px;
+}
+
+.operation-badge {
+  min-width: 52px;
+}
+
+.change-theme-item,
+.change-theme {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.change-theme {
+  cursor: pointer;
+}
+.change-theme svg {
+  height: 20px;
+}
+
+.info-table .table {
+  width: -webkit-fill-available;
+}
+
+.accordion-button:focus {
+  box-shadow: none !important;
+}
+
+.accordion-button:not(.collapsed) {
+  background: none !important;
+}
+
+.brand {
+  font-family: Arial, sans-serif;
+  color: #007bff !important;
+  font-weight: 700;
+}
+
+.navbar, footer {
+  background-color: #f8f9fa;
+}
+
+.social-img {
+  max-width: 40px;
+  max-height: 40px;
+}
+
+.dark .main-search__button svg {
+  fill: #757575;
+}
+.dark .navbar, .dark footer {
+  background-color: #222222 !important;
+}
+.dark .nav-link {
+  color: #fff !important;
+}
+.dark table .accordion-button,
+.dark .info-table .accordion-button {
+  background-color: #131313;
+}
+.dark table .accordion-item,
+.dark .info-table .accordion-item {
+  background-color: #131313;
+}
+.dark .info-table {
+  color: #fff !important;
+  background-color: #131313 !important;
+  border-color: #282828 !important;
+}
+.dark .info-table .border-bottom {
+  border-color: #282828 !important;
+}
+.dark .info-table .table {
+  width: -webkit-fill-available;
+}
+
+h6, .h6, h5, .h5, h4, .h4, h3, .h3, h2, .h2, h1, .h1 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+h1, .h1 {
+  font-size: calc(1.375rem + 1.5vw);
+}
+
+@media (min-width: 1200px) {
+  h1, .h1 {
+    font-size: 2.5rem;
+  }
+}
+h2, .h2 {
+  font-size: calc(1.325rem + 0.9vw);
+}
+
+@media (min-width: 1200px) {
+  h2, .h2 {
+    font-size: 2rem;
+  }
+}
+h3, .h3 {
+  font-size: calc(1.3rem + 0.6vw);
+}
+
+@media (min-width: 1200px) {
+  h3, .h3 {
+    font-size: 1.75rem;
+  }
+}
+h4, .h4 {
+  font-size: calc(1.275rem + 0.3vw);
+}
+
+@media (min-width: 1200px) {
+  h4, .h4 {
+    font-size: 1.5rem;
+  }
+}
+h5, .h5 {
+  font-size: 1.25rem;
+}
+
+h6, .h6 {
+  font-size: 1rem;
+}
+
+p {
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+small, .small {
+  font-size: 0.875em;
+}
