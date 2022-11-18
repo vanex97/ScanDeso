@@ -3,15 +3,24 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\AddressRequest;
+use App\Services\AddressService;
 use App\Services\DesoService;
 
 class AddressController extends Controller
 {
+    public $addressService;
+
+    public function __construct()
+    {
+        $this->addressService = app(AddressService::class);
+    }
+
     public function index($address, AddressRequest $request)
     {
         $desoService = app(DesoService::class);
 
         $user = $desoService->getSingleProfile($address);
+
         $transactions = null;
 
         $params = $request->validated();

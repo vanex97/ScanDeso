@@ -11,6 +11,14 @@ class BlockController extends Controller
     {
         $desoService = app(DesoService::class);
 
-        dd($desoService->blockInfoByHeight($block, false));
+        $block = $desoService->blockInfoByHeight($block, false);
+
+        if (!$block || !isset($block['Header'])) {
+            abort(404);
+        }
+
+        $block = $block['Header'];
+
+        return view('block', compact('block'));
     }
 }

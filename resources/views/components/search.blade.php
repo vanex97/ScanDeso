@@ -1,11 +1,15 @@
 <div class="main-search">
-    <form action="{{ route('address.search') }}" method="POST" class="main-search__form" id="search-form">
+    <form method="POST"
+          class="main-search__form"
+          id="search-form"
+          data-address="{{ route('address.search') }}"
+          data-transaction="{{ route('transaction', ['transactionId' => '-']) }}">
         @csrf
-        <input class="main-search__input"
+        <input class="main-search__input bg-light"
                type="text"
                name="address"
-               placeholder="Search by Username / Addresses">
-        <button class="main-search__button" type="submit">
+               placeholder="Search by Username / Addresses / Transaction ID">
+        <button class="main-search__button bg-light" type="submit">
             <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
                  viewBox="0 0 52.966 52.966" style="enable-background:new 0 0 52.966 52.966;" xml:space="preserve">
                         <path d="M51.704,51.273L36.845,35.82c3.79-3.801,6.138-9.041,6.138-14.82c0-11.58-9.42-21-21-21s-21,9.42-21,21s9.42,21,21,21

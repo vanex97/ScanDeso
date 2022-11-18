@@ -1,3 +1,7 @@
+* {
+    transition-duration: 200ms;
+}
+
 .container {
     margin: 0 auto;
     max-width: 60%;
@@ -76,4 +80,31 @@
 
 .operation-badge {
     min-width: 52px;
+}
+
+.change-theme-item,
+.change-theme {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.change-theme {
+    cursor: pointer;
+
+    svg {
+        height: 20px;
+    }
+}
+
+.info-table .table {
+    width: -webkit-fill-available;
+}
+
+.accordion-button:focus {
+    box-shadow: none !important;
+}
+
+.accordion-button:not(.collapsed) {
+    background: none !important;
 }

@@ -18,16 +18,24 @@ class TransactionController extends Controller
 
         $transaction = $transaction['Transactions'][0];
 
-        $block = $desoService->blockInfo($transaction['BlockHashHex']);
+        $block = null;
 
-        if (!isset($block['Header']['BlockHashHex'])) {
-            abort(404);
+        if (isset($transaction['BlockHashHex'])) {
+            $block = $desoService->blockInfo($transaction['BlockHashHex']);
+
+            if (isset($block['Header']['BlockHashHex'])) {
+                $block = $block['Header'];
+            }
         }
 
-        $block = $block['Header'];
+        $transactorKey = $transaction['TransactionMetadata']['TransactorPublicKeyBase58Check'];
+        $lastTransaction = $desoService->transactionsInfo($transactorKey, 1);
 
-        $transactionOwner = $transaction['TransactionMetadata']['TransactorPublicKeyBase58Check'];
-        $lastTransaction = $desoService->transactionsInfo($transactionOwner, 1);
+        $transactorProfile = $desoService->getSingleProfile($transactorKey);
+
+        if (isset($transactorProfile['Profile'])) {
+            $transactorProfile = $transactorProfile['Profile'];
+        }
 
         if (isset($lastTransaction['Transactions'][0]['TransactionIDBase58Check'])) {
             $lastTransaction = $lastTransaction['Transactions'][0]['TransactionIDBase58Check'];
@@ -35,8 +43,6 @@ class TransactionController extends Controller
             $lastTransaction = null;
         }
 
-//        dd($transaction, $block);
-
-        return view('transaction', compact(['transaction', 'block', 'lastTransaction']));
+        return view('transaction', compact(['transaction', 'block', 'lastTransaction', 'transactorProfile']));
     }
 }

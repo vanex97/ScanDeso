@@ -1,5 +1,9 @@
 .brand {
     font-family: Arial, sans-serif;
-    color: #007bff;
+    color: #007bff !important;
     font-weight: 700;
+}
+
+.navbar, footer {
+    background-color: #f8f9fa;
 }

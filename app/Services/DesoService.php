@@ -101,27 +101,6 @@ class DesoService
         return null;
     }
 
-//    /**
-//     * метод получения цепочки транзакций
-//     */
-//    public function transactionsChain($transactionId, $limit)
-//    {
-//        $transactions = [];
-//
-//        for ($i = 0; $i < $limit; $i++) {
-//            $transaction = $this->transactionInfo($transactionId);
-//
-//            if (!isset($transaction['Transactions'][0])) {
-//                return null;
-//            }
-//
-//            $transactions[] = $transaction['Transactions'][0];
-//            $transactionId = $transaction['Transactions'][0]['Inputs'][0]['TransactionIDBase58Check'];
-//        }
-//
-//        return $transactions;
-//    }
-
     public function transactionInfo($transactionID)
     {
         return $this->request('POST','v1/transaction-info', [
@@ -144,7 +123,6 @@ class DesoService
             'FullBlock' => $fullBlock
         ]);
     }
-
 
     private function request($method, $uri, $body = []) {
         try {
