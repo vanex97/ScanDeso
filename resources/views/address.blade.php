@@ -39,10 +39,10 @@
                     <span>Total transactions:</span>
                     <span>{{ number_format($transactionQuantity) }}</span>
                 </li>
-                <li class="list-group-item d-flex justify-content-between">
-                    <span>Account age:</span>
-                    <span>...</span>
-                </li>
+{{--                <li class="list-group-item d-flex justify-content-between">--}}
+{{--                    <span>Account age:</span>--}}
+{{--                    <span>...</span>--}}
+{{--                </li>--}}
             </ul>
         </div>
 {{--        <div class="card mt-5 col">--}}
@@ -80,16 +80,14 @@
                 </td>
                 <td>
                     {{ \App\Helpers\StringHelper::formatTransactionType($transaction['TransactionType']) }}
-                    @if (isset($transaction['TransactionMetadata']['FollowTxindexMetadata']['IsUnfollow'])
-                         && $transaction['TransactionMetadata']['FollowTxindexMetadata']['IsUnfollow'])
-                        (Unfollow)
-                    @elseif(isset($transaction['TransactionMetadata']['LikeTxindexMetadata']['IsUnlike'])
-                            && $transaction['TransactionMetadata']['LikeTxindexMetadata']['IsUnlike'])
-                        (Unlike)
-                    @elseif(isset($transaction['ExtraData']['DiamondPostHash']) && $transaction['TransactionType'] == 'BASIC_TRANSFER')
+                    @php $transactionSubType = \App\Helpers\TransactionHelper::getSubtype($transaction) @endphp
+
+                    @if(isset($transaction['ExtraData']['DiamondPostHash']) && $transaction['TransactionType'] == 'BASIC_TRANSFER')
                         💎
-                    @elseif(isset($transaction['TransactionMetadata']['NFTBidTxindexMetadata']['IsBuyNowBid']))
-                        {{ $transaction['TransactionMetadata']['NFTBidTxindexMetadata']['IsBuyNowBid'] ? '(Buy now)' : '' }}
+                    @endif
+
+                    @if($transactionSubType)
+                        ({{ $transactionSubType }})
                     @endif
                 </td>
                 <td>
@@ -104,7 +102,6 @@
                 </td>
                 <td class="text-center">
                     @if(isset($transaction['TransactionMetadata']['CreatorCoinTxindexMetadata']['OperationType']))
-                        <span class="badge rounded-pill text-bg-warning operation-badge"></span>
                         @if($transaction['TransactionMetadata']['CreatorCoinTxindexMetadata']['OperationType'] == 'buy')
                             <span class="badge rounded-pill text-bg-success operation-badge">Buy</span>
                         @elseif($transaction['TransactionMetadata']['CreatorCoinTxindexMetadata']['OperationType'] == 'sell')
@@ -121,9 +118,8 @@
                     @endif
                 </td>
                 <td>
-                    <?php
-                        $transactionInputs = \App\Helpers\TransactionHelper::getTransferInputs($transaction['TransactionMetadata']['AffectedPublicKeys']);
-                    ?>
+                    @php $transactionInputs = \App\Helpers\TransactionHelper::getTransferInputs($transaction['TransactionMetadata']['AffectedPublicKeys']); @endphp
+
                     @if(!$transactionInputs || $transaction['TransactionType'] == 'UPDATE_PROFILE')
                         -
                     @elseif(count($transactionInputs) == 1)
@@ -166,40 +162,15 @@
                         </div>
                     @endif
                 </td>
-                @if(in_array($transaction['TransactionType'], ['BASIC_TRANSFER', 'NFT_BID']))
+
+                @if(\App\Helpers\TransactionHelper::getValueByType($transaction))
                     <td data-bs-toggle="tooltip"
                         data-bs-placement="top"
-                        data-bs-title="{{ \App\Helpers\CurrencyHelper::nanoToDeso(\App\Helpers\TransactionHelper::getValue($transaction), null) }} DESO">
-                            {{ \App\Helpers\CurrencyHelper::nanoToDeso(\App\Helpers\TransactionHelper::getValue($transaction)) }}
-                    </td>
-                @elseif(isset($transaction['TransactionMetadata']['DAOCoinTransferTxindexMetadata']['DAOCoinToTransferNanos']))
-                    <td data-bs-toggle="tooltip"
-                        data-bs-placement="top"
-                        data-bs-title="{{ \App\Helpers\CurrencyHelper::hexdecToDecimal($transaction['TransactionMetadata']['DAOCoinTransferTxindexMetadata']['DAOCoinToTransferNanos']) }} {{ $transaction['TransactionMetadata']['DAOCoinTransferTxindexMetadata']['CreatorUsername'] }}">
-                        {{ \App\Helpers\CurrencyHelper::hexdecToDecimal($transaction['TransactionMetadata']['DAOCoinTransferTxindexMetadata']['DAOCoinToTransferNanos']) }}
-                    </td>
-                @elseif(isset($transaction['TransactionMetadata']['CreatorCoinTxindexMetadata']['DESOLockedNanosDiff']))
-                    <td data-bs-toggle="tooltip"
-                        data-bs-placement="top"
-                        data-bs-title="{{ \App\Helpers\CurrencyHelper::nanoToDeso(abs($transaction['TransactionMetadata']['CreatorCoinTxindexMetadata']['DESOLockedNanosDiff']), null) }} DESO">
-                        {{ \App\Helpers\CurrencyHelper::nanoToDeso(abs($transaction['TransactionMetadata']['CreatorCoinTxindexMetadata']['DESOLockedNanosDiff'])) }}
-                    </td>
-                @elseif(isset($transaction['TransactionMetadata']['CreatorCoinTransferTxindexMetadata']['CreatorCoinToTransferNanos']))
-                    <td data-bs-toggle="tooltip"
-                        data-bs-placement="top"
-                        data-bs-title="{{ \App\Helpers\CurrencyHelper::nanoToDeso($transaction['TransactionMetadata']['CreatorCoinTransferTxindexMetadata']['CreatorCoinToTransferNanos'], null) }} {{ $transaction['TransactionMetadata']['CreatorCoinTransferTxindexMetadata']['CreatorUsername'] }}">
-                        {{ \App\Helpers\CurrencyHelper::nanoToDeso($transaction['TransactionMetadata']['CreatorCoinTransferTxindexMetadata']['CreatorCoinToTransferNanos']) }}
-                    </td>
-                @elseif(isset($transaction['TransactionMetadata']['AcceptNFTBidTxindexMetadata']['BidAmountNanos']))
-                    <td data-bs-toggle="tooltip"
-                        data-bs-placement="top"
-                        data-bs-title="{{ \App\Helpers\CurrencyHelper::nanoToDeso($transaction['TransactionMetadata']['AcceptNFTBidTxindexMetadata']['BidAmountNanos'], null) }} DESO">
-                        {{ \App\Helpers\CurrencyHelper::nanoToDeso($transaction['TransactionMetadata']['AcceptNFTBidTxindexMetadata']['BidAmountNanos']) }}
+                        data-bs-title="{{ \App\Helpers\TransactionHelper::getValueByType($transaction, null) }} {{ \App\Helpers\TransactionHelper::getTickerForValueByType($transaction) }}">
+                        {{ \App\Helpers\TransactionHelper::getValueByType($transaction) }}
                     </td>
                 @else
-                    <td>
-                        -
-                    </td>
+                    <td>-</td>
                 @endif
                 <td>
                     {{ \App\Helpers\CurrencyHelper::nanoToDeso($transaction['TransactionMetadata']['BasicTransferTxindexMetadata']['FeeNanos'], 7) }}

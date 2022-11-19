@@ -32,43 +32,23 @@
             <div class="col-3">Transaction Type:</div>
             <div class="col-9">
                 {{ \App\Helpers\StringHelper::formatTransactionType($transaction['TransactionType']) }}
-                @if (isset($transaction['TransactionMetadata']['FollowTxindexMetadata']['IsUnfollow'])
-                         && $transaction['TransactionMetadata']['FollowTxindexMetadata']['IsUnfollow'])
-                    (Unfollow)
-                @elseif(isset($transaction['TransactionMetadata']['LikeTxindexMetadata']['IsUnlike'])
-                        && $transaction['TransactionMetadata']['LikeTxindexMetadata']['IsUnlike'])
-                    (Unlike)
-                @elseif(isset($transaction['TransactionMetadata']['UpdateNFTTxindexMetadata']['IsForSale']))
-                    <?php //TODO: уточнить у Оли ?>
-                    ({{ $transaction['TransactionMetadata']['UpdateNFTTxindexMetadata']['IsForSale'] ? 'set for sale' : 'set not for sale' }})
-                @elseif(isset($transaction['TransactionMetadata']['NFTBidTxindexMetadata']['IsBuyNowBid']))
-                    {{ $transaction['TransactionMetadata']['NFTBidTxindexMetadata']['IsBuyNowBid'] ? '(Buy now)' : '' }}
+
+                @php $transactionSubType = \App\Helpers\TransactionHelper::getSubtype($transaction) @endphp
+
+                @if ($transactionSubType)
+                    ({{ $transactionSubType }})
                 @endif
 
-                @if(isset($transaction['TransactionMetadata']['LikeTxindexMetadata']['PostHashHex']))
-                    (<a href="https://diamondapp.com/posts/{{ $transaction['TransactionMetadata']['LikeTxindexMetadata']['PostHashHex'] }}" target="_blank">link to post</a>)
-                    @elseif(isset($transaction['TransactionMetadata']['SubmitPostTxindexMetadata']['PostHashBeingModifiedHex']))
-                    (<a href="https://diamondapp.com/posts/{{ $transaction['TransactionMetadata']['SubmitPostTxindexMetadata']['PostHashBeingModifiedHex'] }}" target="_blank">link to post</a>)
-                    @elseif(isset($transaction['ExtraData']['DiamondPostHash']))
-                    (<a href="https://diamondapp.com/posts/{{ $transaction['ExtraData']['DiamondPostHash'] }}" target="_blank">link to post</a>)
-                @elseif(isset($transaction['TransactionMetadata']['NFTTransferTxindexMetadata']['NFTPostHashHex']))
-                    (<a href="https://diamondapp.com/nft/{{ $transaction['TransactionMetadata']['NFTTransferTxindexMetadata']['NFTPostHashHex'] }}" target="_blank">link to nft</a>,
-                    <a href="https://nftz.me/posts/{{ $transaction['TransactionMetadata']['NFTTransferTxindexMetadata']['NFTPostHashHex'] }}" target="_blank">nftz</a>)
-                @elseif(isset($transaction['TransactionMetadata']['AcceptNFTTransferTxindexMetadata']['NFTPostHashHex']))
-                    (<a href="https://diamondapp.com/nft/{{ $transaction['TransactionMetadata']['AcceptNFTTransferTxindexMetadata']['NFTPostHashHex'] }}" target="_blank">link to nft</a>,
-                    <a href="https://nftz.me/posts/{{ $transaction['TransactionMetadata']['AcceptNFTTransferTxindexMetadata']['NFTPostHashHex'] }}" target="_blank">nftz</a>)
-                @elseif(isset($transaction['TransactionMetadata']['UpdateNFTTxindexMetadata']['NFTPostHashHex']))
-                    (<a href="https://diamondapp.com/nft/{{ $transaction['TransactionMetadata']['UpdateNFTTxindexMetadata']['NFTPostHashHex'] }}" target="_blank">link to nft</a>,
-                    <a href="https://nftz.me/posts/{{ $transaction['TransactionMetadata']['UpdateNFTTxindexMetadata']['NFTPostHashHex'] }}" target="_blank">nftz</a>)
-                @elseif(isset($transaction['TransactionMetadata']['CreateNFTTxindexMetadata']['NFTPostHashHex']))
-                    (<a href="https://diamondapp.com/nft/{{ $transaction['TransactionMetadata']['CreateNFTTxindexMetadata']['NFTPostHashHex'] }}" target="_blank">link to nft</a>,
-                    <a href="https://nftz.me/posts/{{ $transaction['TransactionMetadata']['CreateNFTTxindexMetadata']['NFTPostHashHex'] }}" target="_blank">nftz</a>)
-                @elseif(isset($transaction['TransactionMetadata']['NFTBidTxindexMetadata']['NFTPostHashHex']))
-                    (<a href="https://diamondapp.com/nft/{{ $transaction['TransactionMetadata']['NFTBidTxindexMetadata']['NFTPostHashHex'] }}" target="_blank">link to nft</a>,
-                    <a href="https://nftz.me/posts/{{ $transaction['TransactionMetadata']['NFTBidTxindexMetadata']['NFTPostHashHex'] }}" target="_blank">nftz</a>)
-                @elseif(isset($transaction['TransactionMetadata']['AcceptNFTBidTxindexMetadata']['NFTPostHashHex']))
-                    (<a href="https://diamondapp.com/nft/{{ $transaction['TransactionMetadata']['AcceptNFTBidTxindexMetadata']['NFTPostHashHex'] }}" target="_blank">link to nft</a>,
-                    <a href="https://nftz.me/posts/{{ $transaction['TransactionMetadata']['AcceptNFTBidTxindexMetadata']['NFTPostHashHex'] }}" target="_blank">nftz</a>)
+                @php
+                    $postHash = \App\Helpers\TransactionHelper::getPostHash($transaction);
+                    $nftHash = \App\Helpers\TransactionHelper::getNFTHash($transaction);
+                @endphp
+
+                @if($postHash)
+                    (<a href="https://diamondapp.com/posts/{{ $postHash }}" target="_blank">link to post</a>)
+                @else($nftHash)
+                    (<a href="https://diamondapp.com/nft/{{ $nftHash }}" target="_blank">link to nft</a>,
+                    <a href="https://nftz.me/posts/{{ $nftHash }}" target="_blank">nftz</a>)
                 @endif
             </div>
         </div>
@@ -197,9 +177,9 @@
         <div class="row m-2 mb-3">
             <div class="col-3">To:</div>
             <div class="col-9">
-                <?php
-                $transactionInputs = \App\Helpers\TransactionHelper::getTransferInputs($transaction['TransactionMetadata']['AffectedPublicKeys']);
-                ?>
+
+                @php $transactionInputs = \App\Helpers\TransactionHelper::getTransferInputs($transaction['TransactionMetadata']['AffectedPublicKeys']); @endphp
+
                 @if(!$transactionInputs || $transaction['TransactionType'] == 'UPDATE_PROFILE')
                     -
                 @elseif(count($transactionInputs) == 1)
@@ -255,9 +235,8 @@
         </a>
         <div class="collapse" id="collapseExample">
 
-            <?php
-                $NFTRoyaltiesMetadata = \App\Helpers\TransactionHelper::getNFTRoyaltiesMetadata($transaction);
-            ?>
+            @php $NFTRoyaltiesMetadata = \App\Helpers\TransactionHelper::getNFTRoyaltiesMetadata($transaction); @endphp
+
             @if($NFTRoyaltiesMetadata)
                 <div class="row m-2 mb-3">
                     <h4>NFT Royalties:</h4>

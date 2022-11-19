@@ -6,6 +6,9 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="icon" type="image/x-icon" href="/favicon.png">
+    <link rel="preload" href="/css/bootstrap-cyborg.min.css" as="style"/>
+    <link rel="preload" href="/css/bootstrap.min.css" as="style"/>
+
     @if(request()->cookie('theme') == 'dark')
         <link id="mainStyle" href="/css/bootstrap-cyborg.min.css" rel="stylesheet" data-theme="dark">
     @else
