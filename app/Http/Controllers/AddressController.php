@@ -40,7 +40,12 @@ class AddressController extends Controller
             abort(404);
         }
 
-        $transactionQuantity = $transactions['LastPublicKeyTransactionIndex'] + DesoService::TRANSACTIONS_LIMIT * $page;
+        $transactionQuantity = null;
+        $lastTransaction = $desoService->transactionsInfo($user['Profile']['PublicKeyBase58Check'], 1);
+
+        if (isset($lastTransaction['LastPublicKeyTransactionIndex'])) {
+            $transactionQuantity = $lastTransaction['LastPublicKeyTransactionIndex'] + count($lastTransaction['Transactions']);
+        }
 
         $transactions = array_reverse($transactions['Transactions']);
         $user = $user['Profile'];

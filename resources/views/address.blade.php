@@ -35,10 +35,12 @@
                         DESO ≈ ${{ \App\Helpers\CurrencyHelper::nanoToDollars($user['DESOBalanceNanos'], $desoDesoPrice) }}
                     </span>
                 </li>
-                <li class="list-group-item d-flex justify-content-between flex-wrap">
-                    <span class="me-2">Total transactions:</span>
-                    <span>{{ number_format($transactionQuantity) }}</span>
-                </li>
+                @if($transactionQuantity)
+                    <li class="list-group-item d-flex justify-content-between flex-wrap">
+                        <span class="me-2">Total transactions:</span>
+                        <span>{{ number_format($transactionQuantity) }}</span>
+                    </li>
+                @endif
 {{--                <li class="list-group-item d-flex justify-content-between">--}}
 {{--                    <span>Account age:</span>--}}
 {{--                    <span>...</span>--}}
