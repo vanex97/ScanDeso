@@ -46,7 +46,7 @@
 
                 @if($postHash)
                     (<a href="https://diamondapp.com/posts/{{ $postHash }}" target="_blank">link to post</a>)
-                @else($nftHash)
+                @elseif($nftHash)
                     (<a href="https://diamondapp.com/nft/{{ $nftHash }}" target="_blank">link to nft</a>,
                     <a href="https://nftz.me/posts/{{ $nftHash }}" target="_blank">nftz</a>)
                 @endif

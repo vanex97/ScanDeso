@@ -150,7 +150,6 @@ class TransactionHelper
 
     public static function issetValueFromTransaction($transaction, $keyPaths)
     {
-
         foreach($keyPaths as $keyPath) {
             if (count($keyPath) == 2 && isset($transaction[$keyPath[0]][$keyPath[1]])) {
                 return $transaction[$keyPath[0]][$keyPath[1]];
