@@ -21,20 +21,20 @@
 
     <div class="border info-table">
         <div class="row m-2 mb-3">
-            <div class="col-3">Block hash hex:</div>
-            <div class="col-9">{{ $block['BlockHashHex'] }}</div>
+            <div class="col-md-3">Block hash hex:</div>
+            <div class="col-md-9 text-break">{{ $block['BlockHashHex'] }}</div>
         </div>
         <div class="row m-2 mb-3">
-            <div class="col-3">Height:</div>
-            <div class="col-9">{{ $block['Height'] }}</div>
+            <div class="col-md-3">Height:</div>
+            <div class="col-md-9 text-break">{{ $block['Height'] }}</div>
         </div>
         <div class="row m-2 mb-3">
-            <div class="col-3">Version:</div>
-            <div class="col-9">{{ $block['Version'] }}</div>
+            <div class="col-md-3">Version:</div>
+            <div class="col-md-9 text-break">{{ $block['Version'] }}</div>
         </div>
         <div class="row m-2 mb-3">
-            <div class="col-3">Timestamp:</div>
-            <div id="timestamp" class="col-9" data-timestamp="{{ $block['TstampSecs'] ?? '' }}">
+            <div class="col-md-3">Timestamp:</div>
+            <div id="timestamp" class="col-md-9 text-break text-break" data-timestamp="{{ $block['TstampSecs'] ?? '' }}">
                 @if(isset($block['TstampSecs']))
                     <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
                 @else

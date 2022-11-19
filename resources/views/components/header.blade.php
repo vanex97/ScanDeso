@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg">
+<nav class="navbar navbar-expand">
     <div class="container-fluid container-xxl">
         <a class="brand navbar-brand" href="{{ route('home') }}">ScanDeso</a>
         <span><small>DESO: ${{ $desoDesoPrice }}</small></span>

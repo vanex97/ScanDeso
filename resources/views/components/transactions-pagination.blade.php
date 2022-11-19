@@ -1,6 +1,6 @@
 @if ($pages > 1)
     <nav>
-        <ul class="pagination justify-content-end">
+        <ul class="pagination justify-content-md-end justify-content-center flex-wrap">
             <li class="page-item @if($page == 1) disabled @endif">
                 <a class="page-link" href="{{ route('address', ['address' => $address]) }}">First</a>
             </li>

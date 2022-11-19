@@ -25,12 +25,12 @@
 
     <div class="border info-table">
         <div class="row m-2 mb-3">
-            <div class="col-3">Transaction ID:</div>
-            <div class="col-9" id="transaction">{{ $transaction['TransactionIDBase58Check'] }}</div>
+            <div class="col-md-3">Transaction ID:</div>
+            <div class="col-md-9 text-break" id="transaction">{{ $transaction['TransactionIDBase58Check'] }}</div>
         </div>
         <div class="row m-2 mb-3">
-            <div class="col-3">Transaction Type:</div>
-            <div class="col-9">
+            <div class="col-md-3">Transaction Type:</div>
+            <div class="col-md-9 text-break">
                 {{ \App\Helpers\StringHelper::formatTransactionType($transaction['TransactionType']) }}
 
                 @php $transactionSubType = \App\Helpers\TransactionHelper::getSubtype($transaction) @endphp
@@ -54,16 +54,16 @@
         </div>
         @if(isset($transaction['ExtraData']['DiamondLevel']))
             <div class="row m-2 mb-3">
-                <div class="col-3">Diamond level:</div>
-                <div class="col-9">
+                <div class="col-md-3">Diamond level:</div>
+                <div class="col-md-9 text-break">
                     {{ str_repeat('💎', $transaction['ExtraData']['DiamondLevel']) }}
                 </div>
             </div>
         @endif
         <div class="border-bottom"></div>
         <div class="row m-2 mb-3">
-            <div class="col-3">Block:</div>
-            <div id="blockHeight" class="col-9">
+            <div class="col-md-3">Block:</div>
+            <div id="blockHeight" class="col-md-9 text-break">
                 @if(isset($block['Height']))
                     <a href="{{ route('block', ['block' => $block['Height']]) }}">{{ $block['Height'] }}</a>
                 @else
@@ -73,8 +73,8 @@
             </div>
         </div>
         <div class="row m-2 mb-3">
-            <div class="col-3">Txn index in block:</div>
-            <div id="tnxIndex" class="col-9">
+            <div class="col-md-3">Txn index in block:</div>
+            <div id="tnxIndex" class="col-md-9 text-break">
                 @if($block)
                     {{ $transaction['TransactionMetadata']['TxnIndexInBlock'] }}
                 @else
@@ -83,8 +83,8 @@
             </div>
         </div>
         <div class="row m-2 mb-3">
-            <div class="col-3">Timestamp:</div>
-            <div id="timestamp" class="col-9" data-timestamp="{{ $block['TstampSecs'] ?? '' }}">
+            <div class="col-md-3">Timestamp:</div>
+            <div id="timestamp" class="col-md-9 text-break" data-timestamp="{{ $block['TstampSecs'] ?? '' }}">
                 @if(isset($block['TstampSecs']))
                     <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
                 @else
@@ -95,16 +95,16 @@
         @if(isset($transaction['TransactionMetadata']['DAOCoinTransferTxindexMetadata']))
             <div class="border-bottom"></div>
             <div class="row m-2 mb-3">
-                <div class="col-3">DAO Creator:</div>
-                <div class="col-9">
+                <div class="col-md-3">DAO Creator:</div>
+                <div class="col-md-9 text-break">
                     <a href="https://daodao.io/d/{{ $transaction['TransactionMetadata']['DAOCoinTransferTxindexMetadata']['CreatorUsername'] }}" target="_blank">
                         {{ $transaction['TransactionMetadata']['DAOCoinTransferTxindexMetadata']['CreatorUsername'] }}
                     </a>
                 </div>
             </div>
             <div class="row m-2 mb-3">
-                <div class="col-3">DAO Coins:</div>
-                <div class="col-9">
+                <div class="col-md-3">DAO Coins:</div>
+                <div class="col-md-9 text-break">
                     ≈ {{ \App\Helpers\CurrencyHelper::hexdecToDecimal($transaction['TransactionMetadata']['DAOCoinTransferTxindexMetadata']['DAOCoinToTransferNanos']) }}
                 </div>
             </div>
@@ -112,8 +112,8 @@
         @if(isset($transaction['TransactionMetadata']['CreatorCoinTxindexMetadata']['DESOLockedNanosDiff']))
             <div class="border-bottom"></div>
             <div class="row m-2 mb-3">
-                <div class="col-3">Creator coin value:</div>
-                <div class="col-9">
+                <div class="col-md-3">Creator coin value:</div>
+                <div class="col-md-9 text-break">
                     {{ \App\Helpers\CurrencyHelper::nanoToDeso(abs($transaction['TransactionMetadata']['CreatorCoinTxindexMetadata']['DESOLockedNanosDiff']), null) }} DESO
                     (${{ \App\Helpers\CurrencyHelper::nanoToDollars(abs($transaction['TransactionMetadata']['CreatorCoinTxindexMetadata']['DESOLockedNanosDiff']), $desoDesoPrice, 8) }})
                 </div>
@@ -122,16 +122,16 @@
         @if(isset($transaction['TransactionMetadata']['CreatorCoinTransferTxindexMetadata']))
             <div class="border-bottom"></div>
             <div class="row m-2 mb-3">
-                <div class="col-3">Creator Creator:</div>
-                <div class="col-9">
+                <div class="col-md-3">Creator Creator:</div>
+                <div class="col-md-9 text-break">
                     <a href="https://diamondapp.com/u/{{ $transaction['TransactionMetadata']['CreatorCoinTransferTxindexMetadata']['CreatorUsername'] }}" target="_blank">
                         {{ $transaction['TransactionMetadata']['CreatorCoinTransferTxindexMetadata']['CreatorUsername'] }}
                     </a>
                 </div>
             </div>
             <div class="row m-2 mb-3">
-                <div class="col-3">Creator Coins:</div>
-                <div class="col-9">
+                <div class="col-md-3">Creator Coins:</div>
+                <div class="col-md-9 text-break">
                     {{ \App\Helpers\CurrencyHelper::nanoToDeso($transaction['TransactionMetadata']['CreatorCoinTransferTxindexMetadata']['CreatorCoinToTransferNanos'], null) }}
                 </div>
             </div>
@@ -139,12 +139,12 @@
         @if(isset($transaction['TransactionMetadata']['NFTBidTxindexMetadata']))
             <div class="border-bottom"></div>
             <div class="row m-2 mb-3">
-                <div class="col-3">Serial number:</div>
-                <div class="col-9">{{ $transaction['TransactionMetadata']['NFTBidTxindexMetadata']['SerialNumber'] }}</div>
+                <div class="col-md-3">Serial number:</div>
+                <div class="col-md-9 text-break">{{ $transaction['TransactionMetadata']['NFTBidTxindexMetadata']['SerialNumber'] }}</div>
             </div>
             <div class="row m-2 mb-3">
-                <div class="col-3">Bid Amount:</div>
-                <div class="col-9">
+                <div class="col-md-3">Bid Amount:</div>
+                <div class="col-md-9 text-break">
                     {{ \App\Helpers\CurrencyHelper::nanoToDeso($transaction['TransactionMetadata']['NFTBidTxindexMetadata']['BidAmountNanos'], null) }} DESO
                     (${{ \App\Helpers\CurrencyHelper::nanoToDollars($transaction['TransactionMetadata']['NFTBidTxindexMetadata']['BidAmountNanos'], $desoDesoPrice, 8) }})
                 </div>
@@ -153,12 +153,12 @@
         @if(isset($transaction['TransactionMetadata']['AcceptNFTBidTxindexMetadata']))
             <div class="border-bottom"></div>
             <div class="row m-2 mb-3">
-                <div class="col-3">Serial number:</div>
-                <div class="col-9">{{ $transaction['TransactionMetadata']['AcceptNFTBidTxindexMetadata']['SerialNumber'] }}</div>
+                <div class="col-md-3">Serial number:</div>
+                <div class="col-md-9 text-break">{{ $transaction['TransactionMetadata']['AcceptNFTBidTxindexMetadata']['SerialNumber'] }}</div>
             </div>
             <div class="row m-2 mb-3">
-                <div class="col-3">Bid Amount:</div>
-                <div class="col-9">
+                <div class="col-md-3">Bid Amount:</div>
+                <div class="col-md-9 text-break">
                     {{ \App\Helpers\CurrencyHelper::nanoToDeso($transaction['TransactionMetadata']['AcceptNFTBidTxindexMetadata']['BidAmountNanos'], null) }} DESO
                     (${{ \App\Helpers\CurrencyHelper::nanoToDollars($transaction['TransactionMetadata']['AcceptNFTBidTxindexMetadata']['BidAmountNanos'], $desoDesoPrice, 8) }})
                 </div>
@@ -166,8 +166,8 @@
         @endif
         <div class="border-bottom"></div>
         <div class="row m-2 mb-3">
-            <div class="col-3">From:</div>
-            <div class="col-9">
+            <div class="col-md-3">From:</div>
+            <div class="col-md-9 text-break">
                 <a class="me-2" href="{{ route('address', $transaction['TransactionMetadata']['TransactorPublicKeyBase58Check']) }}">
                     {{ $transaction['TransactionMetadata']['TransactorPublicKeyBase58Check'] }}
                 </a>
@@ -175,8 +175,8 @@
             </div>
         </div>
         <div class="row m-2 mb-3">
-            <div class="col-3">To:</div>
-            <div class="col-9">
+            <div class="col-md-3">To:</div>
+            <div class="col-md-9 text-break">
 
                 @php $transactionInputs = \App\Helpers\TransactionHelper::getTransferInputs($transaction['TransactionMetadata']['AffectedPublicKeys']); @endphp
 
@@ -215,21 +215,21 @@
         </div>
         <div class="border-bottom"></div>
         <div class="row m-2 mb-3">
-            <div class="col-3">Value:</div>
-            <div class="col-9">
+            <div class="col-md-3">Value:</div>
+            <div class="col-md-9 text-break">
                 {{ \App\Helpers\CurrencyHelper::nanoToDeso(\App\Helpers\TransactionHelper::getValue($transaction), null) }} DESO
                 (${{ \App\Helpers\CurrencyHelper::nanoToDollars(\App\Helpers\TransactionHelper::getValue($transaction), $desoDesoPrice, 8) }})
             </div>
         </div>
         <div class="row m-2 mb-3">
-            <div class="col-3">Transaction Fee:</div>
-            <div class="col-9">
+            <div class="col-md-3">Transaction Fee:</div>
+            <div class="col-md-9 text-break">
                 {{ \App\Helpers\CurrencyHelper::nanoToDeso($transaction['TransactionMetadata']['BasicTransferTxindexMetadata']['FeeNanos'], 7) }} DESO
                 (${{ \App\Helpers\CurrencyHelper::nanoToDollars($transaction['TransactionMetadata']['BasicTransferTxindexMetadata']['FeeNanos'], $desoDesoPrice, 8) }})
             </div>
         </div>
         <a class="row m-2 mb-2" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
-            <div class="col-3">
+            <div class="col-md-3">
                 Show more...
             </div>
         </a>
@@ -238,7 +238,7 @@
             @php $NFTRoyaltiesMetadata = \App\Helpers\TransactionHelper::getNFTRoyaltiesMetadata($transaction); @endphp
 
             @if($NFTRoyaltiesMetadata)
-                <div class="row m-2 mb-3">
+                <div class="row m-2 mb-3 table-responsive">
                     <h4>NFT Royalties:</h4>
                     <table class="table ms-2 me-2">
                         <thead>
@@ -293,7 +293,7 @@
                     </table>
                 </div>
             @endif
-            <div class="row m-2 mb-3">
+            <div class="row m-2 mb-3 table-responsive">
                 <h4>Transaction Inputs:</h4>
                 <table class="table ms-2 me-2">
                     <thead>
@@ -316,7 +316,7 @@
                     </tbody>
                 </table>
             </div>
-            <div class="row m-2 mb-3">
+            <div class="row m-2 mb-3 table-responsive">
                 <h4>Transaction Outputs:</h4>
                 <table class="table ms-2 me-2">
                     <thead>
@@ -339,7 +339,7 @@
                     </tbody>
                 </table>
             </div>
-            <div class="row m-2 mb-3">
+            <div class="row m-2 mb-3 table-responsive">
                 <h4>Affected Public Keys:</h4>
                 <table class="table ms-2 me-2">
                     <thead>
