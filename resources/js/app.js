@@ -10,10 +10,13 @@ tooltipTriggerList.map(function (tooltipTriggerEl) {
 const searchForm = document.querySelector('#search-form');
 
 if (searchForm) {
+
+    let searchInput = searchForm.querySelector('.main-search__input');
+
     searchForm.addEventListener('submit', (e) => {
         e.preventDefault();
 
-        let searchQuery = searchForm.querySelector('.main-search__input').value.trim();
+        let searchQuery = searchInput.value.trim();
 
         if(!searchQuery) {
             return;
@@ -28,6 +31,12 @@ if (searchForm) {
 
         window.open(searchForm.dataset.address + '/' + searchQuery, '_self');
     })
+
+    if (window.innerWidth < 530) {
+        searchInput.placeholder = 'Username / Address';
+    } else {
+        searchInput.placeholder = 'Search by Username / Address / Transaction ID';
+    }
 }
 
 const timestamp = document.querySelector('#timestamp');

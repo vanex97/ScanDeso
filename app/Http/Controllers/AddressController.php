@@ -21,6 +21,10 @@ class AddressController extends Controller
 
         $user = $desoService->getSingleProfile($address);
 
+        if (!$user) {
+            abort(404, 'User not found');
+        }
+
         $transactions = null;
 
         $params = $request->validated();
@@ -37,7 +41,7 @@ class AddressController extends Controller
         }
 
         if (!$transactions) {
-            abort(404);
+            abort(404, "User's transactions loading error");
         }
 
         $transactionQuantity = null;

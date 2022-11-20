@@ -14,7 +14,7 @@ class BlockController extends Controller
         $block = $desoService->blockInfoByHeight($block, false);
 
         if (!$block || !isset($block['Header'])) {
-            abort(404);
+            abort(404, 'Block not found');
         }
 
         $block = $block['Header'];
