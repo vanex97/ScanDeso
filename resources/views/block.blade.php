@@ -43,5 +43,5 @@
             </div>
         </div>
     </div>
-    </div>
+    <x-transactions :$transactions></x-transactions>
 @endsection

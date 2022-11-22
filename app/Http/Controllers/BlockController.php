@@ -11,14 +11,15 @@ class BlockController extends Controller
     {
         $desoService = app(DesoService::class);
 
-        $block = $desoService->blockInfoByHeight($block, false);
+        $block = $desoService->blockInfoByHeight($block, true);
 
         if (!$block || !isset($block['Header'])) {
             abort(404, 'Block not found');
         }
 
+        $transactions = $block['Transactions'];
         $block = $block['Header'];
 
-        return view('block', compact('block'));
+        return view('block', compact(['block', 'transactions']));
     }
 }
