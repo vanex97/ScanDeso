@@ -257,17 +257,19 @@
                             <td>{{ \App\Helpers\CurrencyHelper::nanoToDeso($NFTRoyaltiesMetadata['CreatorRoyaltyNanos']) }} DESO</td>
                         </tr>
                         <tr>
-                            <td>Creator Public Key</td>
-                            <td>
-                                <a class="text-truncate hash-tag"
-                                   data-bs-toggle="tooltip"
-                                   data-bs-placement="top"
-                                   data-bs-custom-class="address-tooltip"
-                                   data-bs-title="{{ $NFTRoyaltiesMetadata['CreatorPublicKeyBase58Check'] }}"
-                                   href="{{ route('address', ['address' => $NFTRoyaltiesMetadata['CreatorPublicKeyBase58Check']]) }}">
-                                    {{ $NFTRoyaltiesMetadata['CreatorPublicKeyBase58Check'] }}
-                                </a>
-                            </td>
+                            @if($NFTRoyaltiesMetadata['CreatorPublicKeyBase58Check'])
+                                <td>Creator Public Key</td>
+                                <td>
+                                    <a class="text-truncate hash-tag"
+                                       data-bs-toggle="tooltip"
+                                       data-bs-placement="top"
+                                       data-bs-custom-class="address-tooltip"
+                                       data-bs-title="{{ $NFTRoyaltiesMetadata['CreatorPublicKeyBase58Check'] }}"
+                                       href="{{ route('address', ['address' => $NFTRoyaltiesMetadata['CreatorPublicKeyBase58Check']]) }}">
+                                        {{ $NFTRoyaltiesMetadata['CreatorPublicKeyBase58Check'] }}
+                                    </a>
+                                </td>
+                            @endif
                         </tr>
                         @if(isset($NFTRoyaltiesMetadata['AdditionalDESORoyaltiesMap']))
                             <tr>
