@@ -23,7 +23,7 @@ class TransactionService
 
     public function blockInfo($blockHasHex)
     {
-        if (isset($blockHasHex)) {
+        if ($blockHasHex) {
             $block = $this->desoService->blockInfo($blockHasHex);
 
             if (isset($block['Header']['BlockHashHex'])) {

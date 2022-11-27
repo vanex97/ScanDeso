@@ -22,7 +22,10 @@ class TransactionController extends Controller
             abort(404);
         }
 
-        $block = $this->transactionService->blockInfo($transaction['BlockHashHex']);
+        $block = null;
+        if (isset($transaction['BlockHashHex'])) {
+            $block = $this->transactionService->blockInfo($transaction['BlockHashHex']);
+        }
 
         $transactorKey = $transaction['TransactionMetadata']['TransactorPublicKeyBase58Check'];
 
