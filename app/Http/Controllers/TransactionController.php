@@ -3,45 +3,32 @@
 namespace App\Http\Controllers;
 
 use App\Services\DesoService;
+use App\Services\TransactionService;
 
 class TransactionController extends Controller
 {
+    public $transactionService;
+
+    public function __construct()
+    {
+        $this->transactionService = app(TransactionService::class);
+    }
+
     public function index($transactionId)
     {
-        $desoService = app(DesoService::class);
+        $transaction = $this->transactionService->transaction($transactionId);
 
-        $transaction = $desoService->transactionInfo($transactionId);
-
-        if (!isset($transaction['Transactions'][0])) {
+        if (!$transaction) {
             abort(404);
         }
 
-        $transaction = $transaction['Transactions'][0];
-
-        $block = null;
-
-        if (isset($transaction['BlockHashHex'])) {
-            $block = $desoService->blockInfo($transaction['BlockHashHex']);
-
-            if (isset($block['Header']['BlockHashHex'])) {
-                $block = $block['Header'];
-            }
-        }
+        $block = $this->transactionService->blockInfo($transaction['BlockHashHex']);
 
         $transactorKey = $transaction['TransactionMetadata']['TransactorPublicKeyBase58Check'];
-        $lastTransaction = $desoService->transactionsInfo($transactorKey, 1);
 
-        $transactorProfile = $desoService->getSingleProfile($transactorKey);
+        $transactorProfile = $this->transactionService->transactorProfile($transactorKey);
 
-        if (isset($transactorProfile['Profile'])) {
-            $transactorProfile = $transactorProfile['Profile'];
-        }
-
-        if (isset($lastTransaction['Transactions'][0]['TransactionIDBase58Check'])) {
-            $lastTransaction = $lastTransaction['Transactions'][0]['TransactionIDBase58Check'];
-        } else {
-            $lastTransaction = null;
-        }
+        $lastTransaction = $this->transactionService->lastTransaction($transactorKey);
 
         return view('transaction', compact(['transaction', 'block', 'lastTransaction', 'transactorProfile']));
     }

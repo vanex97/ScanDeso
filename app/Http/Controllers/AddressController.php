@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\AddressRequest;
-use App\Models\Block;
 use App\Services\AddressService;
 use App\Services\DesoService;
 
