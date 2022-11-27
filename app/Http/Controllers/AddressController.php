@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\AddressRequest;
+use App\Models\Block;
 use App\Services\AddressService;
 use App\Services\DesoService;
 
@@ -21,37 +22,20 @@ class AddressController extends Controller
 
         $user = $desoService->getSingleProfile($address);
 
-        if (!$user) {
+        if (!$user || !isset($user['Profile']['PublicKeyBase58Check'])) {
             abort(404, 'User not found');
         }
 
-        $transactions = null;
+        $page = $request->validated()['page'] ?? 1;
 
-        $params = $request->validated();
-
-        // pagination
-        $page = $params['page'] ?? 1;
-
-        if (isset($user['Profile']['PublicKeyBase58Check'])) {
-            $transactions = $desoService->transactionInfoByPage(
-                $user['Profile']['PublicKeyBase58Check'],
-                DesoService::TRANSACTIONS_LIMIT,
-                $page
-            );
-        }
+        $transactions = $this->addressService->transactionsByPage($user['Profile']['PublicKeyBase58Check'], $page);
 
         if (!$transactions) {
             abort(404, "User's transactions loading error");
         }
 
-        $transactionQuantity = null;
-        $lastTransaction = $desoService->transactionsInfo($user['Profile']['PublicKeyBase58Check'], 1);
+        $transactionQuantity = $this->addressService->transactionQuantity($user['Profile']['PublicKeyBase58Check']);
 
-        if (isset($lastTransaction['LastPublicKeyTransactionIndex'])) {
-            $transactionQuantity = $lastTransaction['LastPublicKeyTransactionIndex'] + count($lastTransaction['Transactions']);
-        }
-
-        $transactions = array_reverse($transactions['Transactions']);
         $user = $user['Profile'];
 
         return view('address', compact(['transactions', 'user', 'transactionQuantity', 'page', 'address']));
