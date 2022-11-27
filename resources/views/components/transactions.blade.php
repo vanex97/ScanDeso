@@ -38,14 +38,25 @@
                     @endif
                 </td>
                 <td>
-                    <a href="{{ route('address', $transaction['TransactionMetadata']['TransactorPublicKeyBase58Check']) }}"
-                       class="text-truncate hash-tag"
-                       data-bs-toggle="tooltip"
-                       data-bs-placement="top"
-                       data-bs-custom-class="address-tooltip"
-                       data-bs-title="{{ $transaction['TransactionMetadata']['TransactorPublicKeyBase58Check'] }}">
-                        {{ $transaction['TransactionMetadata']['TransactorPublicKeyBase58Check'] }}
-                    </a>
+                    @if ($userKeyToUsername->has($transaction['TransactionMetadata']['TransactorPublicKeyBase58Check']))
+                        <a href="{{ route('address', $userKeyToUsername->get($transaction['TransactionMetadata']['TransactorPublicKeyBase58Check'])) }}"
+                           class="text-truncate hash-tag"
+                           data-bs-toggle="tooltip"
+                           data-bs-placement="top"
+                           data-bs-custom-class="address-tooltip"
+                           data-bs-title="{{ $transaction['TransactionMetadata']['TransactorPublicKeyBase58Check'] }}">
+                            {{ $userKeyToUsername->get($transaction['TransactionMetadata']['TransactorPublicKeyBase58Check']) }}
+                        </a>
+                    @else
+                        <a href="{{ route('address', $transaction['TransactionMetadata']['TransactorPublicKeyBase58Check']) }}"
+                           class="text-truncate hash-tag"
+                           data-bs-toggle="tooltip"
+                           data-bs-placement="top"
+                           data-bs-custom-class="address-tooltip"
+                           data-bs-title="{{ $transaction['TransactionMetadata']['TransactorPublicKeyBase58Check'] }}">
+                            {{ $transaction['TransactionMetadata']['TransactorPublicKeyBase58Check'] }}
+                        </a>
+                    @endif
                 </td>
                 @if(isset($user))
                     <td class="text-center">
@@ -72,14 +83,25 @@
                     @if(!$transactionInputs || $transaction['TransactionType'] == 'UPDATE_PROFILE')
                         -
                     @elseif(count($transactionInputs) == 1)
-                        <a href="{{ route('address', $transactionInputs[0]['PublicKeyBase58Check']) }}"
-                           class="text-truncate hash-tag"
-                           data-bs-toggle="tooltip"
-                           data-bs-placement="top"
-                           data-bs-custom-class="address-tooltip"
-                           data-bs-title="{{ $transactionInputs[0]['PublicKeyBase58Check'] }}">
-                            {{ $transactionInputs[0]['PublicKeyBase58Check'] }}
-                        </a>
+                        @if ($userKeyToUsername->has($transactionInputs[0]['PublicKeyBase58Check']))
+                            <a href="{{ route('address', $userKeyToUsername->get($transactionInputs[0]['PublicKeyBase58Check'])) }}"
+                               class="text-truncate hash-tag"
+                               data-bs-toggle="tooltip"
+                               data-bs-placement="top"
+                               data-bs-custom-class="address-tooltip"
+                               data-bs-title="{{ $transactionInputs[0]['PublicKeyBase58Check'] }}">
+                                {{ $userKeyToUsername->get($transactionInputs[0]['PublicKeyBase58Check']) }}
+                            </a>
+                        @else
+                            <a href="{{ route('address', $transactionInputs[0]['PublicKeyBase58Check']) }}"
+                               class="text-truncate hash-tag"
+                               data-bs-toggle="tooltip"
+                               data-bs-placement="top"
+                               data-bs-custom-class="address-tooltip"
+                               data-bs-title="{{ $transactionInputs[0]['PublicKeyBase58Check'] }}">
+                                {{ $transactionInputs[0]['PublicKeyBase58Check'] }}
+                            </a>
+                        @endif
                     @elseif(count($transactionInputs) >= 2)
                         <div class="accordion accordion-flush" id="accordion-{{ $loop->iteration }}">
                             <div class="accordion-item">
@@ -96,14 +118,25 @@
                                      data-bs-parent="#accordion-{{ $loop->iteration }}">
                                     @foreach($transactionInputs as $affectedTransaction)
                                         <div class="row mt-1">
-                                            <a href="{{ route('address', $affectedTransaction['PublicKeyBase58Check']) }}"
-                                               class="text-truncate hash-tag"
-                                               data-bs-toggle="tooltip"
-                                               data-bs-placement="top"
-                                               data-bs-custom-class="address-tooltip"
-                                               data-bs-title="{{ $affectedTransaction['PublicKeyBase58Check'] }}">
-                                                {{ $affectedTransaction['PublicKeyBase58Check'] }}
-                                            </a>
+                                            @if($userKeyToUsername->has($affectedTransaction['PublicKeyBase58Check']))
+                                                <a href="{{ route('address', $userKeyToUsername->get($affectedTransaction['PublicKeyBase58Check'])) }}"
+                                                   class="text-truncate hash-tag"
+                                                   data-bs-toggle="tooltip"
+                                                   data-bs-placement="top"
+                                                   data-bs-custom-class="address-tooltip"
+                                                   data-bs-title="{{ $affectedTransaction['PublicKeyBase58Check'] }}">
+                                                    {{ $userKeyToUsername->get($affectedTransaction['PublicKeyBase58Check']) }}
+                                                </a>
+                                            @else
+                                                <a href="{{ route('address', $affectedTransaction['PublicKeyBase58Check']) }}"
+                                                   class="text-truncate hash-tag"
+                                                   data-bs-toggle="tooltip"
+                                                   data-bs-placement="top"
+                                                   data-bs-custom-class="address-tooltip"
+                                                   data-bs-title="{{ $affectedTransaction['PublicKeyBase58Check'] }}">
+                                                    {{ $affectedTransaction['PublicKeyBase58Check'] }}
+                                                </a>
+                                            @endif
                                         </div>
                                     @endforeach
                                 </div>

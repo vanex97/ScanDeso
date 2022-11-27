@@ -2,6 +2,9 @@
 
 namespace App\Services;
 
+use App\Helpers\TransactionHelper;
+use App\Models\User;
+
 class TransactionService
 {
     public $desoService;
@@ -44,5 +47,27 @@ class TransactionService
         $lastTransaction = $this->desoService->transactionsInfo($transactorKey, 1);
 
         return $lastTransaction['Transactions'][0]['TransactionIDBase58Check'] ?? null;
+    }
+
+    public function transactionsUsernames($transactions)
+    {
+        $userKeys = [];
+
+        foreach($transactions as $transaction) {
+            $affectedPublicKeys = $transaction['TransactionMetadata']['AffectedPublicKeys'];
+
+            $transactionInputs = TransactionHelper::getTransferInputs($affectedPublicKeys);
+
+            foreach ($transactionInputs as $transactionInput) {
+                $userKeys[] = $transactionInput['PublicKeyBase58Check'];
+            }
+
+            $userKeys[] = $transaction['TransactionMetadata']['TransactorPublicKeyBase58Check'];
+        }
+
+        return User::whereIn('KeyBase58', $userKeys)
+            ->where('Username', '!=', '')
+            ->get()
+            ->pluck('Username', 'KeyBase58');
     }
 }

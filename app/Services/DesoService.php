@@ -4,6 +4,8 @@ namespace App\Services;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\Promise\EachPromise;
+use GuzzleHttp\Psr7\Response;
 
 class DesoService
 {
@@ -122,6 +124,31 @@ class DesoService
             'Height' => (integer) $height,
             'FullBlock' => $fullBlock
         ]);
+    }
+
+    public function blockInfoByHeightAsync($heightList, $concurrency, $callback)
+    {
+        $promises = (function () use ($heightList) {
+            foreach ($heightList as $height) {
+                yield $this->client->requestAsync('POST', 'v1/block', ['body' => json_encode([
+                    'Height' => (integer) $height,
+                    'FullBlock' => true
+                ])]);
+            }
+        })();
+
+        $eachPromise = new EachPromise($promises, [
+            'concurrency' => $concurrency,
+            'fulfilled' => function (Response $response) use ($callback) {
+                if ($response->getStatusCode() == 200) {
+                    $block = json_decode($response->getBody(), true);
+                    call_user_func($callback, $block);
+                }
+            },
+            'rejected' => function ($reason) {}
+        ]);
+
+        $eachPromise->promise()->wait();
     }
 
     private function request($method, $uri, $body = []) {
