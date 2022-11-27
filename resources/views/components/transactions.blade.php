@@ -5,7 +5,7 @@
             <th scope="col">Transaction ID</th>
             <th scope="col">Type</th>
             <th scope="col">From</th>
-            @if(isset($user))
+            @if($user)
                 <th scope="col"></th>
             @endif
             <th scope="col">To</th>
@@ -58,7 +58,7 @@
                         </a>
                     @endif
                 </td>
-                @if(isset($user))
+                @if($user)
                     <td class="text-center">
                         @if(isset($transaction['TransactionMetadata']['CreatorCoinTxindexMetadata']['OperationType']))
                             @if($transaction['TransactionMetadata']['CreatorCoinTxindexMetadata']['OperationType'] == 'buy')

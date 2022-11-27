@@ -18,7 +18,7 @@ class Transactions extends Component
      *
      * @return void
      */
-    public function __construct($transactions, $user)
+    public function __construct($transactions, $user = null)
     {
         $this->transactions = $transactions;
         $this->user = $user;
