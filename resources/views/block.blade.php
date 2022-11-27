@@ -42,6 +42,29 @@
                 @endif
             </div>
         </div>
+        <a class="row m-2 mb-2" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+            <div class="col-md-3">
+                Show more...
+            </div>
+        </a>
+        <div class="collapse" id="collapseExample">
+            <div class="row m-2 mb-3">
+                <div class="col-md-3">Previous block hash hex:</div>
+                <div class="col-md-9 text-break">{{ $block['PrevBlockHashHex'] }}</div>
+            </div>
+            <div class="row m-2 mb-3">
+                <div class="col-md-3">Transaction merkle root hex:</div>
+                <div class="col-md-9 text-break">{{ $block['PrevBlockHashHex'] }}</div>
+            </div>
+            <div class="row m-2 mb-3">
+                <div class="col-md-3">Nonce:</div>
+                <div class="col-md-9 text-break">{{ $block['Nonce'] }}</div>
+            </div>
+            <div class="row m-2 mb-3">
+                <div class="col-md-3">ExtraNonce:</div>
+                <div class="col-md-9 text-break">{{ $block['ExtraNonce'] }}</div>
+            </div>
+        </div>
     </div>
     <x-transactions :$transactions></x-transactions>
 @endsection
