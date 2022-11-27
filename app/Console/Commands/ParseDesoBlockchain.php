@@ -87,7 +87,7 @@ class ParseDesoBlockchain extends Command
         $users = [];
 
         foreach ($block['Transactions'] as $transaction) {
-            $userUpdateData = $this->parseUserByTransaction($transaction, $block);
+            $userUpdateData = $this->parseUserByTransaction($transaction);
 
             if ($userUpdateData) {
                 $users[$userUpdateData['KeyBase58']] = $userUpdateData;
@@ -104,13 +104,14 @@ class ParseDesoBlockchain extends Command
         ]);
     }
 
-    protected function parseUserByTransaction($transaction, $block)
+    protected function parseUserByTransaction($transaction)
     {
         if (!isset($transaction['TransactionMetadata']['TransactorPublicKeyBase58Check'])) {
             return null;
         }
 
-        if (!isset($transaction['TransactionMetadata']['UpdateProfileTxindexMetadata']['NewUsername'])) {
+        if (!isset($transaction['TransactionMetadata']['UpdateProfileTxindexMetadata']['NewUsername'])
+            || !$transaction['TransactionMetadata']['UpdateProfileTxindexMetadata']['NewUsername']) {
             return null;
         }
 
@@ -124,7 +125,6 @@ class ParseDesoBlockchain extends Command
 
             return null;
         }
-
 
         return [
             'KeyBase58' => $userPublicKey,
