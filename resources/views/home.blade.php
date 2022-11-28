@@ -1,5 +1,5 @@
 @extends('layouts.main')
-@section('title', 'Home')
+@section('title', 'DeSo BlockChain Explorer')
 
 @section('content')
     <div class="main-search-home">
