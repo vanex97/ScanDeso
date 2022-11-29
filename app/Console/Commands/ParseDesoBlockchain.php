@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Models\Block;
 use App\Models\User;
 use App\Services\DesoService;
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 
 class ParseDesoBlockchain extends Command
@@ -24,7 +25,7 @@ class ParseDesoBlockchain extends Command
      *
      * @var string
      */
-    protected $description = '';
+    protected $description = 'Parsing DeSo blockchain data with maximum load';
 
     protected $desoService;
 
@@ -53,19 +54,19 @@ class ParseDesoBlockchain extends Command
         $startHeightToParse = $lastParsedBlock ? $lastParsedBlock->Height : 0;
 
         $heightList = $this->getMissedBlocks(
-            $this->option('missed') ? 1 : $startHeightToParse - self::CHECK_MISSING_BLOCKS_RANGE,
+            $this->option('missed') ? 1 : $startHeightToParse - $this::CHECK_MISSING_BLOCKS_RANGE,
             $startHeightToParse
         );
 
-        for ($i = 0; $i < self::MAX_BLOCK_PARSE; $i++) {
+        for ($i = 0; $i < $this::MAX_BLOCK_PARSE; $i++) {
             $heightList[] = ++$startHeightToParse;
 
-            if (count($heightList) >= self::CONCURRENCY) {
+            if (count($heightList) >= $this::CONCURRENCY) {
                 $timeStart = microtime(true);
 
                 $this->desoService->blockInfoByHeightAsync(
                     $heightList,
-                    self::CONCURRENCY,
+                    $this::CONCURRENCY,
                     function ($block) {
                         $this->parseBlock($block);
                     }
@@ -79,22 +80,30 @@ class ParseDesoBlockchain extends Command
             }
         }
 
-        return self::SUCCESS;
+        return $this::SUCCESS;
     }
 
     protected function parseBlock($block)
     {
-        $users = [];
-
-        foreach ($block['Transactions'] as $transaction) {
-            $userUpdateData = $this->parseUserByTransaction($transaction);
-
-            if ($userUpdateData) {
-                $users[$userUpdateData['KeyBase58']] = $userUpdateData;
-            }
+        if (!isset($block['Header']['Height'])) {
+            return;
         }
 
-        User::insert($users);
+        if (isset($block['Transactions'])) {
+            $users = [];
+
+            foreach ($block['Transactions'] as $transaction) {
+                $userUpdateData = $this->parseUserByTransaction($transaction);
+
+                if ($userUpdateData) {
+                    $users[$userUpdateData['KeyBase58']] = $userUpdateData;
+                }
+            }
+
+            if ($users) {
+                User::insert($users);
+            }
+        }
 
         Block::create([
             'Height' => $block['Header']['Height'],

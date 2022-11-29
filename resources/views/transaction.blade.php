@@ -183,9 +183,12 @@
                 @if(!$transactionInputs || $transaction['TransactionType'] == 'UPDATE_PROFILE')
                     -
                 @elseif(count($transactionInputs) == 1)
-                    <a href="{{ route('address', $transactionInputs[0]['PublicKeyBase58Check']) }}">
+                    <a class="me-2" href="{{ route('address', $transactionInputs[0]['PublicKeyBase58Check']) }}">
                         {{ $transactionInputs[0]['PublicKeyBase58Check'] }}
                     </a>
+                    @if ($userKeyToUsername->has($transactionInputs[0]['PublicKeyBase58Check']))
+                        (<a href="https://diamondapp.com/u/{{ $userKeyToUsername->get($transactionInputs[0]['PublicKeyBase58Check']) }}" target="_blank">{{ $userKeyToUsername->get($transactionInputs[0]['PublicKeyBase58Check']) }}</a>)
+                    @endif
                 @elseif(count($transactionInputs) >= 2)
                     <div class="accordion accordion-flush" id="accordion">
                         <div class="accordion-item">
@@ -201,10 +204,13 @@
                                  aria-labelledby="flush-heading"
                                  data-bs-parent="#accordion">
                                 @foreach($transactionInputs as $affectedTransaction)
-                                    <div class="row mt-1">
+                                    <div class="row mt-1 me-2 d-block">
                                         <a href="{{ route('address', $affectedTransaction['PublicKeyBase58Check']) }}">
                                             {{ $affectedTransaction['PublicKeyBase58Check'] }}
                                         </a>
+                                        @if ($userKeyToUsername->has($affectedTransaction['PublicKeyBase58Check']))
+                                            (<a class="p-0" href="https://diamondapp.com/u/{{ $userKeyToUsername->get($affectedTransaction['PublicKeyBase58Check']) }}" target="_blank">{{ $userKeyToUsername->get($affectedTransaction['PublicKeyBase58Check']) }}</a>)
+                                        @endif
                                     </div>
                                 @endforeach
                             </div>

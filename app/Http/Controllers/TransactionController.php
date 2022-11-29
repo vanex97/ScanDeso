@@ -33,6 +33,8 @@ class TransactionController extends Controller
 
         $lastTransaction = $this->transactionService->lastTransaction($transactorKey);
 
-        return view('transaction', compact(['transaction', 'block', 'lastTransaction', 'transactorProfile']));
+        $userKeyToUsername = $this->transactionService->transactionsUsernames([$transaction]);
+
+        return view('transaction', compact(['transaction', 'block', 'lastTransaction', 'transactorProfile', 'userKeyToUsername']));
     }
 }
