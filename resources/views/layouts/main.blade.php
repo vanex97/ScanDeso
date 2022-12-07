@@ -19,6 +19,16 @@
     <link rel="stylesheet" href="{{ mix('/css/app.css') }}">
 
     <title>ScanDeso - @yield('title')</title>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-S3CFZWMBF7"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-S3CFZWMBF7');
+    </script>
 </head>
 <body class="test d-flex flex-column min-vh-100 {{ request()->cookie('theme') == 'dark' ? 'dark' : 'light' }}">
     <x-header></x-header>
